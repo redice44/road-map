@@ -1,0 +1,21 @@
+{
+  "name": "road-map",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/redice44/road-map.git"
+  },
+  "author": "Matt Thomson <red.cataclysm@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/redice44/road-map/issues"
+  },
+  "homepage": "https://github.com/redice44/road-map#readme"
+}
