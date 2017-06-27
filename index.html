@@ -7,7 +7,20 @@
 </head>
 <body>
   <div id="map"></div>
-  <div id="controls"></div>
+  <div id="controls">
+    <div class="io">
+      <div>
+        <textarea id="input-geojson" placeholder="Input"></textarea>
+        <button id="load-geojson">Load geoJson</button>
+      </div>
+      <div>
+        <textarea id="output-geojson" placeholder="Output"></textarea>
+        <button id="update-geojson">Commit Changes</button>
+        <p><a id="download-roads" href="#" download="roads.geojson">Download Roads</a></p>
+        <p><a id="download-intersections" href="#" download="intersections.geojson">Download Intersections</a></p>
+      </div>
+    </div>
+  </div>
   <script src="./js/roads.js">
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCQu2lSuWf7Did9x789vfqz1C0plsWcys&callback=initMap"></script>
