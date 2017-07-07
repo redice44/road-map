@@ -36,7 +36,9 @@ function updateGeoJson () {
   // Reset poly line
   startPoint = null;
   endPoint = null;
-  pathPolyLine.setPath([]);
+  if (pathPolyLine) {
+    pathPolyLine.setPath([]);
+  }
 
   // Clear map data layer
   map.data.forEach((feature) => {
@@ -53,10 +55,72 @@ function updateGeoJson () {
   // Update the output textarea
   document.getElementById('output-geojson').value = JSON.stringify(geojson);
 
-  // Update the download link
+  // Update the download link for roads
   let blob = new Blob([JSON.stringify(geojson)], {type: 'application/json'});
   let url = URL.createObjectURL(blob);
   document.getElementById('download-roads').href = url;
+
+  // Update the download link for intersections
+  let intersectionsGeoJson = getIntersections();
+  blob = new Blob([JSON.stringify(intersectionsGeoJson)], {type: 'application/json'});
+  url = URL.createObjectURL(blob);
+  document.getElementById('download-intersections').href = url;
+
+}
+
+function getIntersections () {
+  let roads = [];
+  let intersections = [];
+
+  geojson.features.forEach((feature) => {
+    roads.push(feature.geometry.coordinates);
+  });
+
+  intersections.push(roads[0][0]);
+  roads.forEach((road) => {
+    if (isNewIntersection(intersections, road[0])) {
+      intersections.push(road[0]);
+    }
+
+    if (isNewIntersection(intersections, road[1])) {
+      intersections.push(road[1]);
+    }
+  });
+
+  let intersectionGeoJson = {
+    "type": "FeatureCollection",
+    "features": []
+  };
+
+  intersections.forEach((intersection) => {
+    intersectionGeoJson.features.push({
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": intersection
+      },
+      "properties": {}
+    });
+  });
+
+  console.log(intersectionGeoJson);
+  return intersectionGeoJson;
+}
+
+function isNewIntersection (intersections, point) {
+  let i = 0;
+  let result = true;
+
+  while (i < intersections.length && result) {
+    if (point[0] === intersections[i][0] && point[1] === intersections[i][1]) {
+      // coordinate already exists, do not add.
+      console.log('Exists. Do not add.');
+      result = false;
+    }
+    i++;
+  }
+
+  return result;
 }
 
 function handleMapClick (event) {
@@ -68,12 +132,12 @@ function handleMapClick (event) {
     startPoint = snapVertex(startPoint);
   } else {
     var polylineFeature = {
-        "type": "Feature",
-        "geometry": {
-          "type": "LineString",
-          "coordinates": []
-        },
-            "properties": {}
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": []
+      },
+      "properties": {}
     };
 
     endPoint = { lng: event.latLng.lng(), lat: event.latLng.lat() };
